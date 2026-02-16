@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Case Optimizer v2.0</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #00d4ff;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+        
+        .input-section {
+            background: rgba(30, 30, 50, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            color: #00d4ff;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: #00d4ff;
+            border-radius: 2px;
+        }
+        
+        /* Mode Tabs */
+        .mode-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .mode-tab {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
+            color: #888;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .mode-tab:hover {
+            border-color: rgba(0, 212, 255, 0.4);
+            color: #ccc;
+        }
+        
+        .mode-tab.active {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1));
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+        
+        .mode-description {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 3px;
+        }
+        
+        /* Sub-mode tabs */
+        .submode-tabs {
+            display: none;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .submode-tabs.show {
+            display: flex;
+        }
+        
+        .submode-tab {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 150, 0, 0.3);
+            background: transparent;
+            color: #888;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .submode-tab:hover {
+            border-color: rgba(255, 150, 0, 0.5);
+            color: #ffaa00;
+        }
+        
+        .submode-tab.active {
+            background: rgba(255, 150, 0, 0.15);
+            border-color: #ffaa00;
+            color: #ffaa00;
+        }
+        
+        /* Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        .form-group label {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 4px;
+        }
+        
+        .form-group input {
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+        
+        .quantity-group {
+            display: none;
+        }
+        
+        .quantity-group.show {
+            display: flex;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: #000;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        }
+        
+        /* 3D Viewport */
+        .viewport-section {
+            background: rgba(30, 30, 50, 0.9);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #viewport3d {
+            flex: 1;
+            min-height: 500px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+        }
+        
+        .viewport-controls {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            flex-wrap: wrap;
+        }
+        
+        .viewport-btn {
+            padding: 8px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        .viewport-btn:hover {
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+        
+        .layer-info {
+            color: #888;
+            font-size: 0.9rem;
+            margin-left: auto;
+        }
+        
+        .layer-info strong {
+            color: #00d4ff;
+        }
+        
+        /* Results */
+        .results-panel.hidden {
+            display: none;
+        }
+        
+        .info-banner {
+            background: rgba(100, 100, 255, 0.1);
+            border: 1px solid rgba(100, 100, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        
+        .info-banner strong {
+            color: #8888ff;
+        }
+        
+        /* Filter Buttons */
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: transparent;
+            color: #aaa;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        
+        .filter-btn:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+        
+        .filter-btn.active {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+        
+        /* Combination Cards */
+        .combo-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .combo-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .combo-card:hover {
+            border-color: rgba(0, 212, 255, 0.4);
+        }
+        
+        .combo-card.selected {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+        }
+        
+        .combo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .combo-type {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .combo-type.combo { background: rgba(255, 150, 0, 0.2); color: #ffaa00; }
+        .combo-type.multi { background: rgba(150, 100, 255, 0.2); color: #aa88ff; }
+        
+        .combo-score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+        
+        .combo-stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+        
+        .combo-stat {
+            color: #888;
+        }
+        
+        .combo-stat strong {
+            color: #ccc;
+        }
+        
+        .combo-stat.cost strong {
+            color: #ffcc00;
+        }
+        
+        /* Box Items in Combo */
+        .box-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .box-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .box-item.primary {
+            border-left: 3px solid #00d4ff;
+        }
+        
+        .box-item.secondary {
+            border-left: 3px solid #ffaa00;
+        }
+        
+        .box-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #666;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+        }
+        
+        .box-label.primary { color: #00d4ff; }
+        .box-label.secondary { color: #ffaa00; }
+        
+        .box-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .box-sku {
+            font-family: monospace;
+            color: #00d4ff;
+            font-size: 0.85rem;
+        }
+        
+        .box-dims {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        
+        .box-counts {
+            text-align: right;
+        }
+        
+        .box-count {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #00ff88;
+        }
+        
+        .box-units {
+            font-size: 0.75rem;
+            color: #888;
+        }
+        
+        .box-subtotal {
+            font-size: 0.8rem;
+            color: #ffcc00;
+        }
+        
+        /* Score Mini Bars */
+        .score-mini-bars {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .score-mini {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .score-mini-label {
+            font-size: 0.6rem;
+            color: #666;
+        }
+        
+        .score-mini-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 2px;
+        }
+        
+        .score-mini-fill {
+            height: 100%;
+        }
+        
+        .score-mini-fill.pallet { background: #8888ff; }
+        .score-mini-fill.volume { background: #00ff88; }
+        .score-mini-fill.price { background: #ffcc00; }
+        .score-mini-fill.ergo { background: #ff99bb; }
+        
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 15px;
+            padding: 10px 15px;
+            font-size: 0.75rem;
+            color: #666;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+        
+        /* Single Box Cards (Unlimited Mode) */
+        .box-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+        
+        .box-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+        }
+        
+        .box-card:hover {
+            border-color: rgba(0, 212, 255, 0.4);
+        }
+        
+        .box-card.selected {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+        }
+        
+        .box-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .box-rank {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        
+        .rank-1 { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; }
+        .rank-2 { background: linear-gradient(135deg, #c0c0c0, #999); color: #000; }
+        .rank-3 { background: linear-gradient(135deg, #cd7f32, #a06020); color: #fff; }
+        .rank-4 { background: rgba(100, 100, 100, 0.5); color: #aaa; }
+        
+        .box-price {
+            color: #ffcc00;
+            font-weight: 600;
+        }
+        
+        .box-card-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            font-size: 0.8rem;
+        }
+        
+        .box-stat strong {
+            color: #ccc;
+        }
+        
+        .score-bars {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin-top: 8px;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-label {
+            font-size: 0.65rem;
+            color: #666;
+        }
+        
+        .score-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .score-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+        
+        .score-pallet .score-fill { background: #8888ff; }
+        .score-volume .score-fill { background: #00ff88; }
+        .score-price .score-fill { background: #ffcc00; }
+        .score-ergo .score-fill { background: #ff99bb; }
+        
+        .score-value {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 2px;
+        }
+        
+        /* Loading / No Results */
+        .loading, .no-results {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+        }
+        
+        .no-results {
+            color: #ff6666;
+        }
+        
+        /* E-Commerce Group + WAZIN branding */
+        .brand-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+        .brand-header .logo-ecommerce {
+            height: 48px;
+            max-width: 280px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+        .brand-header .logo-wazin {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+        
+        /* Overall score badge (big number) */
+        .overall-score-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .overall-score-badge.score-high { background: linear-gradient(135deg, #00ff88, #00cc66); color: #000; }
+        .overall-score-badge.score-mid { background: linear-gradient(135deg, #ffcc00, #ff9900); color: #000; }
+        .overall-score-badge.score-low { background: linear-gradient(135deg, #ff6666, #cc3333); color: #fff; }
+        
+        /* Cost summary row */
+        .cost-summary {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 204, 0, 0.15);
+        }
+        .cost-item {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 80px;
+        }
+        .cost-item .cost-label {
+            font-size: 0.65rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .cost-item .cost-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ffcc00;
+        }
+        .cost-item .cost-value.total {
+            color: #00ff88;
+            font-size: 1.15rem;
+        }
+        
+        /* Suggestion pills */
+        .suggestions-panel {
+            text-align: center;
+            padding: 20px;
+        }
+        .suggestions-panel p {
+            color: #ff9900;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+        .suggestions-panel .suggestion-label {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        .suggestion-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        .suggestion-pill {
+            padding: 8px 16px;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .suggestion-pill:hover {
+            background: rgba(0, 212, 255, 0.25);
+            border-color: #00d4ff;
+            transform: translateY(-1px);
+        }
+        
+        /* Perfect fit badge */
+        .perfect-fit-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(0, 255, 136, 0.15);
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+        
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: #555;
+            font-size: 0.75rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .app-footer a { color: #00d4ff; text-decoration: none; }
+        
+        /* Advanced cost options */
+        .advanced-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 10px 0;
+            margin-top: 10px;
+            background: none;
+            border: none;
+            color: #00d4ff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: left;
+        }
+        .advanced-toggle:hover { color: #00aacc; }
+        .advanced-section {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 212, 255, 0.15);
+        }
+        .advanced-section.show { display: block; }
+        .advanced-section .form-grid { margin-bottom: 0; }
+        .uline-warning {
+            margin-top: 12px;
+            padding: 10px 12px;
+            background: rgba(255, 200, 0, 0.08);
+            border: 1px solid rgba(255, 200, 0, 0.25);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #cca;
+        }
+        .cost-breakdown-block {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 204, 0, 0.2);
+        }
+        .cost-breakdown-block .cost-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.85rem;
+        }
+        .cost-breakdown-block .cost-row.total-row {
+            border-top: 1px solid rgba(255,255,255,0.15);
+            margin-top: 6px;
+            padding-top: 8px;
+            font-weight: 700;
+            color: #00ff88;
+        }
+        .cost-breakdown-block .cost-row .label { color: #888; }
+        .cost-breakdown-block .cost-row .value { color: #ffcc00; }
+        .cost-breakdown-block .cost-row.total-row .value { color: #00ff88; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="brand-header" role="banner">
+            <img src="assets/logo-ecommerce.png" alt="E-Commerce" class="logo-ecommerce" />
+            <img src="assets/logo-wazin.png" alt="WAZIN" class="logo-wazin" />
+        </header>
+        <h1>📦 Master Case Optimizer</h1>
+        <p class="subtitle">Find the optimal ULINE Master Case with 3D visualization</p>
+        
+        <div class="main-layout">
+            <!-- Left Panel -->
+            <div class="left-panel">
+                <div class="input-section">
+                    <div class="section-title">Product Information</div>
+                    
+                    <!-- Main Mode Selection -->
+                    <div class="mode-tabs">
+                        <button class="mode-tab active" onclick="setMode('unlimited', this)">
+                            ∞ Unlimited
+                            <div class="mode-description">Find best box</div>
+                        </button>
+                        <button class="mode-tab" onclick="setMode('limited', this)">
+                            🔢 Limited
+                            <div class="mode-description">Specific quantity</div>
+                        </button>
+                    </div>
+                    
+                    <!-- Sub-mode for Limited -->
+                    <div class="submode-tabs" id="submodeSection">
+                        <button class="submode-tab active" onclick="setSubmode('case_packed', this)">
+                            📦 Case Packed
+                            <div class="mode-description">ONE box type only (uniform)</div>
+                        </button>
+                        <button class="submode-tab" onclick="setSubmode('single_units', this)">
+                            🎯 Single Units
+                            <div class="mode-description">Up to 3 types, EXACT fit</div>
+                        </button>
+                    </div>
+                    
+                    <!-- Product Form -->
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Product Name (optional)</label>
+                            <input type="text" id="productName" placeholder="My Product">
+                        </div>
+                        <div class="form-group">
+                            <label>Length (in)</label>
+                            <input type="number" id="productLength" step="0.1" min="0.1" value="4">
+                        </div>
+                        <div class="form-group">
+                            <label>Width (in)</label>
+                            <input type="number" id="productWidth" step="0.1" min="0.1" value="3">
+                        </div>
+                        <div class="form-group">
+                            <label>Height (in)</label>
+                            <input type="number" id="productHeight" step="0.1" min="0.1" value="2">
+                        </div>
+                        <div class="form-group">
+                            <label>Weight (lbs)</label>
+                            <input type="number" id="productWeight" step="0.01" min="0.01" value="0.5">
+                        </div>
+                        <div class="form-group quantity-group" id="quantityGroup">
+                            <label>Total Quantity</label>
+                            <input type="number" id="productQuantity" min="1" placeholder="100" value="100">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Units per pack (optional)</label>
+                            <input type="number" id="unitsPerPack" min="1" value="1" placeholder="1 = single unit, 2 = 2-pack…" title="Selling as single unit (1), 2-pack (2), etc.">
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="advanced-toggle" onclick="toggleAdvanced()" aria-expanded="false" id="advancedToggle">
+                        ⚙️ Advanced cost options (labels, handling, labor, FBA)
+                        <span id="advancedChevron">▼</span>
+                    </button>
+                    <div class="advanced-section" id="advancedSection">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Label cost per box ($)</label>
+                                <input type="number" id="labelPerBox" step="0.01" min="0" value="0" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Handling per box ($)</label>
+                                <input type="number" id="handlingPerBox" step="0.01" min="0" value="0.25" placeholder="0.25">
+                            </div>
+                            <div class="form-group">
+                                <label>Labor hourly rate ($)</label>
+                                <input type="number" id="laborHourly" step="0.01" min="0" value="" placeholder="Optional">
+                            </div>
+                            <div class="form-group">
+                                <label>Boxes per hour (throughput)</label>
+                                <input type="number" id="boxesPerHour" step="1" min="1" value="" placeholder="Optional">
+                            </div>
+                            <div class="form-group">
+                                <label>FBA placement</label>
+                                <select id="fbaPlacement">
+                                    <option value="5+">Send to 5+ locations (lowest fee)</option>
+                                    <option value="2-3">Send to 2–3 locations</option>
+                                    <option value="single">Send to single location</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>FBA fee schedule</label>
+                                <select id="fbaSchedule">
+                                    <option value="2025">Until Jan 15, 2026</option>
+                                    <option value="2026">From Jan 15, 2026</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="uline-warning">
+                            <strong>Note:</strong> Box costs are based on ULINE list pricing. Prices can often be negotiated and reduced with volume. Verify at uline.com before ordering.
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="optimize()">
+                        🔍 Find Optimal Box
+                    </button>
+                </div>
+                
+                <!-- Results Panel -->
+                <div class="results-panel hidden" id="resultsPanel">
+                    <div class="input-section">
+                        <div class="section-title">Recommendations</div>
+                        
+                        <div class="info-banner">
+                            📦 Pallet: <strong>48"×40"×65"</strong> |
+                            ⚖️ Max: <strong>50 lbs</strong> |
+                            📏 FBA: <strong>36"/25"/25"</strong>
+                        </div>
+                        
+                        <!-- Sort Buttons -->
+                        <div class="filter-section">
+                            <button class="filter-btn active" onclick="sortResults('overall')">🏆 Overall</button>
+                            <button class="filter-btn" onclick="sortResults('pallet')">📦 Pallet</button>
+                            <button class="filter-btn" onclick="sortResults('volume')">📐 Volume</button>
+                            <button class="filter-btn" onclick="sortResults('price')">💰 Price</button>
+                            <button class="filter-btn" onclick="sortResults('ergonomic')">🏋️ Ergo</button>
+                        </div>
+                        
+                        <!-- Results Container -->
+                        <div id="resultsContainer">
+                            <div class="loading">Calculating...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel: 3D Viewport -->
+            <div class="viewport-section">
+                <div id="viewport3d"></div>
+                <div class="viewport-controls">
+                    <button class="viewport-btn" onclick="previousLayer()">⬇️ Prev Layer</button>
+                    <button class="viewport-btn" onclick="nextLayer()">⬆️ Next Layer</button>
+                    <button class="viewport-btn" onclick="showAllLayers()">📦 All Layers</button>
+                    <button class="viewport-btn" onclick="resetCamera()">🎯 Reset View</button>
+                    <span class="layer-info" id="layerInfo">Layer: <strong>All</strong></span>
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-dot" style="background: #00d4ff;"></div> Primary Box</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: #ffaa00;"></div> Secondary Box</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: #aa88ff;"></div> Third Box</div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="app-footer">
+            Master Case Optimizer v2.0 &mdash; Built by WAZIN &mdash; Pallet: 48"&times;40"&times;65" | Max weight: 50 lbs | FBA limits: 36"/25"/25"
+            <br><strong>Costs are based on ULINE list pricing;</strong> prices can often be negotiated and reduced with volume. Verify at <a href="https://www.uline.com" target="_blank">uline.com</a> before placing orders.
+        </footer>
+    </div>
+    
+    <script>
+        // =====================================================================
+        // GLOBALS
+        // =====================================================================
+        const API = 'http://localhost:8002/api';
+        let currentMode = 'unlimited';
+        let currentSubmode = 'case_packed';
+        let currentResults = [];
+        let currentCombinations = [];
+        let suggestedQuantities = [];
+        let selectedCombo = null;
+        let selectedBox = null;
+        
+        // Three.js
+        let scene, camera, renderer, controls;
+        let boxGroup, productsGroup;
+        let currentLayer = -1;
+        let totalLayers = 0;
+        
+        // =====================================================================
+        // THREE.JS SETUP
+        // =====================================================================
+        function initThreeJS() {
+            const container = document.getElementById('viewport3d');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a2e);
+            
+            camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            camera.position.set(40, 30, 40);
+            
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+            
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            
+            const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambient);
+            
+            const directional = new THREE.DirectionalLight(0xffffff, 0.8);
+            directional.position.set(50, 100, 50);
+            scene.add(directional);
+            
+            const grid = new THREE.GridHelper(100, 20, 0x444466, 0x333344);
+            scene.add(grid);
+            
+            boxGroup = new THREE.Group();
+            productsGroup = new THREE.Group();
+            scene.add(boxGroup);
+            scene.add(productsGroup);
+            
+            showWelcomeText();
+            animate();
+            window.addEventListener('resize', onResize);
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        function onResize() {
+            const container = document.getElementById('viewport3d');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+        
+        function showWelcomeText() {
+            clearScene();
+            const geo = new THREE.BoxGeometry(20, 15, 20);
+            const edges = new THREE.EdgesGeometry(geo);
+            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ 
+                color: 0x00d4ff, opacity: 0.3, transparent: true 
+            }));
+            line.position.set(0, 7.5, 0);
+            boxGroup.add(line);
+        }
+        
+        function clearScene() {
+            while (boxGroup.children.length > 0) boxGroup.remove(boxGroup.children[0]);
+            while (productsGroup.children.length > 0) productsGroup.remove(productsGroup.children[0]);
+        }
+        
+        // =====================================================================
+        // 3D VISUALIZATION
+        // =====================================================================
+        function renderCombination(combo) {
+            clearScene();
+            if (!combo) return;
+            
+            const prodL = parseFloat(document.getElementById('productLength').value);
+            const prodW = parseFloat(document.getElementById('productWidth').value);
+            const prodH = parseFloat(document.getElementById('productHeight').value);
+            
+            // Get boxes to display
+            let boxesToRender = [];
+            
+            if (combo.type === 'case_packed' && combo.primary) {
+                // Case packed: ONE box type only
+                boxesToRender.push({ box: combo.primary, color: 0x00d4ff, offset: 0 });
+            } else if (combo.boxes && combo.boxes.length > 0) {
+                // Single units mode (1-box, 2-box, 3-box)
+                const colors = [0x00d4ff, 0xffaa00, 0xaa88ff];
+                let offset = 0;
+                combo.boxes.forEach((box, idx) => {
+                    boxesToRender.push({ box, color: colors[idx], offset });
+                    offset += box.length + 5;
+                });
+            } else if (combo.primary) {
+                // Fallback
+                boxesToRender.push({ box: combo.primary, color: 0x00d4ff, offset: 0 });
+            }
+            
+            if (boxesToRender.length === 0) return;
+            
+            totalLayers = 0;
+            
+            boxesToRender.forEach(({ box, color, offset }) => {
+                renderSingleBox(box, color, offset, prodL, prodW, prodH);
+            });
+            
+            currentLayer = -1;
+            updateLayerVisibility();
+            
+            // Fit camera to all boxes
+            const totalWidth = boxesToRender.reduce((sum, b) => sum + b.box.length + 5, 0);
+            const maxHeight = Math.max(...boxesToRender.map(b => b.box.height));
+            fitCameraToScene(totalWidth, maxHeight);
+        }
+        
+        function renderSingleBox(boxData, boxColor, xOffset, prodL, prodW, prodH) {
+            const boxL = boxData.length;
+            const boxW = boxData.width;
+            const boxH = boxData.height;
+            const arrangement = boxData.arrangement.split(' x ').map(s => parseInt(s));
+            const alongL = arrangement[0];
+            const alongW = arrangement[1];
+            const layers = parseInt(arrangement[2]);
+            
+            // Master Case outline
+            const boxGeo = new THREE.BoxGeometry(boxL, boxH, boxW);
+            const edges = new THREE.EdgesGeometry(boxGeo);
+            const boxMesh = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ 
+                color: boxColor, linewidth: 2 
+            }));
+            boxMesh.position.set(xOffset, boxH / 2, 0);
+            boxGroup.add(boxMesh);
+            
+            // Semi-transparent face
+            const faceMat = new THREE.MeshBasicMaterial({ 
+                color: boxColor, transparent: true, opacity: 0.05, side: THREE.DoubleSide
+            });
+            const faceMesh = new THREE.Mesh(new THREE.BoxGeometry(boxL, boxH, boxW), faceMat);
+            faceMesh.position.copy(boxMesh.position);
+            boxGroup.add(faceMesh);
+            
+            // Find product orientation
+            let pL = prodL, pW = prodW, pH = prodH;
+            const orientations = [
+                [prodL, prodW, prodH], [prodL, prodH, prodW], [prodW, prodL, prodH],
+                [prodW, prodH, prodL], [prodH, prodL, prodW], [prodH, prodW, prodL]
+            ];
+            
+            for (const [ol, ow, oh] of orientations) {
+                if (Math.floor(boxL / ol) >= alongL && Math.floor(boxW / ow) >= alongW && Math.floor(boxH / oh) >= layers) {
+                    pL = ol; pW = ow; pH = oh;
+                    break;
+                }
+            }
+            
+            totalLayers = Math.max(totalLayers, layers);
+            
+            const startX = xOffset - boxL / 2 + pL / 2;
+            const startZ = -boxW / 2 + pW / 2;
+            const startY = pH / 2;
+            
+            const productColors = [0x4CAF50, 0x2196F3, 0xFFC107, 0xE91E63, 0x9C27B0];
+            
+            for (let layer = 0; layer < layers; layer++) {
+                const layerGroup = new THREE.Group();
+                layerGroup.userData.layer = layer;
+                
+                const prodColor = productColors[layer % productColors.length];
+                
+                for (let row = 0; row < alongW; row++) {
+                    for (let col = 0; col < alongL; col++) {
+                        const geo = new THREE.BoxGeometry(pL * 0.95, pH * 0.95, pW * 0.95);
+                        const mat = new THREE.MeshPhongMaterial({ color: prodColor, transparent: true, opacity: 0.85 });
+                        const mesh = new THREE.Mesh(geo, mat);
+                        
+                        mesh.position.set(startX + col * pL, startY + layer * pH, startZ + row * pW);
+                        
+                        const edgeMesh = new THREE.LineSegments(
+                            new THREE.EdgesGeometry(geo),
+                            new THREE.LineBasicMaterial({ color: 0x000000 })
+                        );
+                        edgeMesh.position.copy(mesh.position);
+                        
+                        layerGroup.add(mesh);
+                        layerGroup.add(edgeMesh);
+                    }
+                }
+                
+                productsGroup.add(layerGroup);
+            }
+        }
+        
+        function renderUnlimitedBox(config) {
+            clearScene();
+            if (!config) return;
+            
+            const prodL = parseFloat(document.getElementById('productLength').value);
+            const prodW = parseFloat(document.getElementById('productWidth').value);
+            const prodH = parseFloat(document.getElementById('productHeight').value);
+            
+            renderSingleBox(config, 0x00d4ff, 0, prodL, prodW, prodH);
+            currentLayer = -1;
+            updateLayerVisibility();
+            fitCameraToScene(config.length, config.height);
+        }
+        
+        function fitCameraToScene(width, height) {
+            const dist = Math.max(width, height, 30) * 1.5;
+            camera.position.set(dist, dist * 0.8, dist);
+            controls.target.set(width / 4, height / 2, 0);
+            controls.update();
+        }
+        
+        function updateLayerVisibility() {
+            productsGroup.children.forEach((layerGroup, idx) => {
+                layerGroup.visible = currentLayer === -1 || idx === currentLayer;
+            });
+            
+            const infoEl = document.getElementById('layerInfo');
+            infoEl.innerHTML = currentLayer === -1 
+                ? `Layer: <strong>All (${totalLayers})</strong>`
+                : `Layer: <strong>${currentLayer + 1} / ${totalLayers}</strong>`;
+        }
+        
+        function previousLayer() {
+            if (currentLayer === -1) currentLayer = 0;
+            else if (currentLayer > 0) currentLayer--;
+            updateLayerVisibility();
+        }
+        
+        function nextLayer() {
+            if (currentLayer === -1) currentLayer = 0;
+            else if (currentLayer < totalLayers - 1) currentLayer++;
+            updateLayerVisibility();
+        }
+        
+        function showAllLayers() {
+            currentLayer = -1;
+            updateLayerVisibility();
+        }
+        
+        function resetCamera() {
+            camera.position.set(40, 30, 40);
+            controls.target.set(0, 10, 0);
+            controls.update();
+        }
+        
+        // =====================================================================
+        // UI FUNCTIONS
+        // =====================================================================
+        function setMode(mode, btn) {
+            currentMode = mode;
+            console.log('Set mode to:', mode);
+            
+            document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            
+            document.getElementById('quantityGroup').classList.toggle('show', mode === 'limited');
+            document.getElementById('submodeSection').classList.toggle('show', mode === 'limited');
+        }
+        
+        function setSubmode(submode, btn) {
+            currentSubmode = submode;
+            console.log('Set submode to:', submode);
+            
+            document.querySelectorAll('.submode-tab').forEach(tab => tab.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+        
+        function toggleAdvanced() {
+            const section = document.getElementById('advancedSection');
+            const chevron = document.getElementById('advancedChevron');
+            const toggle = document.getElementById('advancedToggle');
+            section.classList.toggle('show');
+            chevron.textContent = section.classList.contains('show') ? '▲' : '▼';
+            toggle.setAttribute('aria-expanded', section.classList.contains('show'));
+        }
+        
+        async function optimize() {
+            const name = document.getElementById('productName').value || 'Product';
+            const length = parseFloat(document.getElementById('productLength').value);
+            const width = parseFloat(document.getElementById('productWidth').value);
+            const height = parseFloat(document.getElementById('productHeight').value);
+            const weight = parseFloat(document.getElementById('productWeight').value);
+            const quantity = currentMode === 'limited' 
+                ? parseInt(document.getElementById('productQuantity').value) 
+                : -1;
+            const unitsPerPack = parseInt(document.getElementById('unitsPerPack').value) || 1;
+            
+            console.log('Mode:', currentMode, 'Submode:', currentSubmode, 'Qty:', quantity);
+            
+            if (!length || !width || !height || length <= 0 || width <= 0 || height <= 0) {
+                alert('Enter valid dimensions');
+                return;
+            }
+            
+            if (!weight || weight <= 0) {
+                alert('Enter valid weight');
+                return;
+            }
+            
+            if (currentMode === 'limited' && (!quantity || quantity <= 0)) {
+                alert('Enter quantity for Limited Mode');
+                return;
+            }
+            
+            document.getElementById('resultsPanel').classList.remove('hidden');
+            document.getElementById('resultsContainer').innerHTML = `<div class="loading">Mode: ${currentMode} | Submode: ${currentSubmode}</div>`;
+            
+            const payload = { 
+                name, length, width, height, weight, quantity,
+                limited_mode: currentSubmode,
+                units_per_pack: unitsPerPack,
+                label_per_box: parseFloat(document.getElementById('labelPerBox').value) || 0,
+                handling_per_box: parseFloat(document.getElementById('handlingPerBox').value) || 0.25,
+                labor_hourly: document.getElementById('laborHourly').value ? parseFloat(document.getElementById('laborHourly').value) : null,
+                boxes_per_hour: document.getElementById('boxesPerHour').value ? parseFloat(document.getElementById('boxesPerHour').value) : null,
+                fba_placement: document.getElementById('fbaPlacement').value || '5+',
+                fba_schedule_2026: document.getElementById('fbaSchedule').value === '2026',
+            };
+            console.log('Sending:', payload);
+            
+            try {
+                const response = await fetch(`${API}/optimize`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                console.log('Received:', data);
+                
+                if (data.error) {
+                    document.getElementById('resultsContainer').innerHTML = `<div class="no-results">Error: ${data.error}</div>`;
+                    return;
+                }
+                
+                if (currentMode === 'unlimited') {
+                    currentResults = data.recommendations || [];
+                    currentCombinations = [];
+                    suggestedQuantities = [];
+                    console.log('Unlimited results:', currentResults.length);
+                    renderUnlimitedResults();
+                    if (currentResults.length > 0) selectUnlimitedBox(0);
+                } else {
+                    currentCombinations = data.combinations || [];
+                    suggestedQuantities = data.suggested_quantities || [];
+                    currentResults = [];
+                    console.log('Limited combinations:', currentCombinations.length);
+                    if (suggestedQuantities.length > 0) {
+                        console.log('Suggested quantities:', suggestedQuantities);
+                    }
+                    renderLimitedResults();
+                    if (currentCombinations.length > 0) selectCombo(0);
+                }
+                
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('resultsContainer').innerHTML = `<div class="no-results">Connection error: ${err.message}</div>`;
+            }
+        }
+        
+        function sortResults(by) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (currentMode === 'unlimited') {
+                currentResults.sort((a, b) => {
+                    const scoreA = by === 'overall' ? a.scores.overall : a.scores[by];
+                    const scoreB = by === 'overall' ? b.scores.overall : b.scores[by];
+                    return scoreB - scoreA;
+                });
+                currentResults.forEach((r, i) => r.rank = i + 1);
+                renderUnlimitedResults();
+            } else {
+                // Sort combinations by combined score
+                currentCombinations.sort((a, b) => b.combined_score - a.combined_score);
+                renderLimitedResults();
+            }
+        }
+        
+        // =====================================================================
+        // RENDER UNLIMITED MODE
+        // =====================================================================
+        function scoreClass(val) {
+            if (val >= 70) return 'score-high';
+            if (val >= 40) return 'score-mid';
+            return 'score-low';
+        }
+        
+        function renderUnlimitedResults() {
+            if (currentResults.length === 0) {
+                document.getElementById('resultsContainer').innerHTML = `<div class="no-results">No suitable boxes found.</div>`;
+                return;
+            }
+            
+            let html = '<div class="box-cards">';
+            
+            currentResults.slice(0, 6).forEach((r, idx) => {
+                const rankClass = `rank-${Math.min(r.rank || idx + 1, 4)}`;
+                const selectedClass = selectedBox?.sku === r.sku ? 'selected' : '';
+                const rotationBadge = r.orientation && r.orientation !== 'Original' 
+                    ? `<span style="background: rgba(255,150,0,0.2); color: #ffaa00; padding: 2px 6px; border-radius: 3px; font-size: 0.7rem;">🔄 ${r.orientation}</span>` 
+                    : '';
+                const overall = r.scores.overall;
+                
+                html += `
+                    <div class="box-card ${selectedClass}" onclick="selectUnlimitedBox(${idx})">
+                        <div class="box-card-header">
+                            <div class="box-rank ${rankClass}">${r.rank || idx + 1}</div>
+                            <span class="box-sku">${r.sku}</span>
+                            <div class="overall-score-badge ${scoreClass(overall)}">${overall.toFixed(0)}</div>
+                        </div>
+                        ${rotationBadge ? `<div style="margin-bottom: 5px;">${rotationBadge}</div>` : ''}
+                        <div class="box-card-body">
+                            <div class="box-stat">📏 <strong>${r.dimensions}</strong></div>
+                            <div class="box-stat">📦 <strong>${r.units_per_box}</strong> units/box</div>
+                            <div class="box-stat">💲 <strong>$${r.price.toFixed(2)}</strong> per box</div>
+                            <div class="box-stat">💰 <strong>$${r.metrics.price_per_unit.toFixed(3)}</strong>/unit</div>
+                            <div class="box-stat">📐 <strong>${r.metrics.volume_utilization}%</strong> vol. used</div>
+                            <div class="box-stat">⚖️ <strong>${r.metrics.total_weight} lbs</strong></div>
+                        </div>
+                        <div class="score-bars">
+                            <div class="score-item score-pallet">
+                                <div class="score-label">Pallet</div>
+                                <div class="score-bar"><div class="score-fill" style="width: ${r.scores.pallet}%"></div></div>
+                                <div class="score-value">${r.scores.pallet.toFixed(0)}/100</div>
+                            </div>
+                            <div class="score-item score-volume">
+                                <div class="score-label">Volume</div>
+                                <div class="score-bar"><div class="score-fill" style="width: ${r.scores.volume}%"></div></div>
+                                <div class="score-value">${r.scores.volume.toFixed(0)}/100</div>
+                            </div>
+                            <div class="score-item score-price">
+                                <div class="score-label">Price</div>
+                                <div class="score-bar"><div class="score-fill" style="width: ${r.scores.price}%"></div></div>
+                                <div class="score-value">${r.scores.price.toFixed(0)}/100</div>
+                            </div>
+                            <div class="score-item score-ergo">
+                                <div class="score-label">Ergo</div>
+                                <div class="score-bar"><div class="score-fill" style="width: ${r.scores.ergonomic}%"></div></div>
+                                <div class="score-value">${r.scores.ergonomic.toFixed(0)}/100</div>
+                            </div>
+                        </div>
+                        ${renderCostBreakdown(r.cost_breakdown, r.units_per_box)}
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            document.getElementById('resultsContainer').innerHTML = html;
+        }
+        
+        function renderCostBreakdown(cb, unitsForPerUnit) {
+            if (!cb) return '';
+            const u = unitsForPerUnit;
+            const totalLabel = u ? `Total (${u} units)` : 'Total';
+            return `
+                <div class="cost-breakdown-block">
+                    <div class="cost-row"><span class="label">Boxes</span><span class="value">$${cb.boxes.toFixed(2)}</span></div>
+                    ${(cb.labels || 0) > 0 ? `<div class="cost-row"><span class="label">Labels</span><span class="value">$${cb.labels.toFixed(2)}</span></div>` : ''}
+                    ${(cb.handling || 0) > 0 ? `<div class="cost-row"><span class="label">Handling</span><span class="value">$${cb.handling.toFixed(2)}</span></div>` : ''}
+                    ${(cb.labor || 0) > 0 ? `<div class="cost-row"><span class="label">Labor</span><span class="value">$${cb.labor.toFixed(2)}</span></div>` : ''}
+                    ${(cb.fba_inbound || 0) > 0 ? `<div class="cost-row"><span class="label">FBA inbound${cb.fba_tier ? ' (' + cb.fba_tier + ')' : ''}</span><span class="value">$${cb.fba_inbound.toFixed(2)}</span></div>` : ''}
+                    <div class="cost-row total-row"><span class="label">${totalLabel}</span><span class="value">$${cb.total.toFixed(2)}</span></div>
+                    ${(cb.total_per_unit || 0) > 0 ? `<div class="cost-row"><span class="label">Per unit</span><span class="value">$${cb.total_per_unit.toFixed(4)}</span></div>` : ''}
+                </div>
+            `;
+        }
+        
+        function selectUnlimitedBox(idx) {
+            selectedBox = currentResults[idx];
+            selectedCombo = null;
+            
+            document.querySelectorAll('.box-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === idx);
+            });
+            
+            renderUnlimitedBox(selectedBox);
+        }
+        
+        // =====================================================================
+        // RENDER LIMITED MODE (Case Packed / Single Units)
+        // =====================================================================
+        function renderLimitedResults() {
+            const qty = parseInt(document.getElementById('productQuantity').value) || 0;
+            
+            if (currentCombinations.length === 0) {
+                let html = '<div class="suggestions-panel">';
+                
+                if (currentSubmode === 'case_packed' && suggestedQuantities.length > 0) {
+                    html += `
+                        <p>No box fits exactly <strong>${qty} units</strong> case-packed (zero waste).</p>
+                        <div class="suggestion-label">These quantities have perfect case-packed options:</div>
+                        <div class="suggestion-pills">
+                    `;
+                    suggestedQuantities.forEach(q => {
+                        const diff = q - qty;
+                        const label = diff > 0 ? `${q} (+${diff})` : `${q} (${diff})`;
+                        html += `<button class="suggestion-pill" onclick="applySuggestion(${q})">${label}</button>`;
+                    });
+                    html += '</div>';
+                } else {
+                    html += '<p class="no-results">No exact combinations found. Try a different quantity.</p>';
+                }
+                
+                html += '</div>';
+                document.getElementById('resultsContainer').innerHTML = html;
+                return;
+            }
+            
+            let html = '<div class="combo-cards">';
+            
+            currentCombinations.forEach((combo, idx) => {
+                const selectedClass = selectedCombo === combo ? 'selected' : '';
+                const isCasePacked = combo.type === 'case_packed';
+                const isMix = combo.type && combo.type.includes('mix');
+                const typeClass = isMix ? 'multi' : '';
+                const overall = combo.combined_score || 0;
+                
+                let typeLabel;
+                if (isCasePacked) typeLabel = 'Case Packed';
+                else typeLabel = combo.type || 'Mix';
+                
+                html += `
+                    <div class="combo-card ${selectedClass}" onclick="selectCombo(${idx})">
+                        <div class="combo-header">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="combo-type ${typeClass}">${typeLabel}</span>
+                                <span class="perfect-fit-badge">0 empty</span>
+                            </div>
+                            <div class="overall-score-badge ${scoreClass(overall)}">${overall.toFixed(0)}</div>
+                        </div>
+                        <div class="combo-stats">
+                            <div class="combo-stat">📦 <strong>${combo.total_boxes || 0}</strong> boxes total</div>
+                            <div class="combo-stat">✅ <strong>${combo.total_units || 0}</strong> units</div>
+                        </div>
+                        <div class="box-items">
+                `;
+                
+                if (isCasePacked && combo.primary) {
+                    html += renderBoxItem(combo.primary, 'primary');
+                } else if (combo.boxes && combo.boxes.length > 0) {
+                    const labels = ['primary', 'secondary', 'tertiary'];
+                    combo.boxes.forEach((box, i) => {
+                        html += renderBoxItem(box, labels[i] || 'secondary');
+                    });
+                } else if (combo.primary) {
+                    html += renderBoxItem(combo.primary, 'primary');
+                }
+                
+                const costPerUnit = combo.cost_per_unit || (combo.total_cost / combo.total_units);
+                const hasBreakdown = combo.cost_breakdown && (combo.cost_breakdown.labels > 0 || combo.cost_breakdown.handling > 0 || combo.cost_breakdown.labor > 0 || combo.cost_breakdown.fba_inbound > 0);
+                html += `
+                        </div>
+                        <div class="cost-summary">
+                            <div class="cost-item">
+                                <span class="cost-label">Box Price</span>
+                                <span class="cost-value">$${(isCasePacked ? combo.primary.price : combo.boxes[0].price).toFixed(2)}</span>
+                            </div>
+                            <div class="cost-item">
+                                <span class="cost-label">Cost / Unit</span>
+                                <span class="cost-value">$${costPerUnit.toFixed(4)}</span>
+                            </div>
+                            <div class="cost-item">
+                                <span class="cost-label">Boxes Needed</span>
+                                <span class="cost-value">${combo.total_boxes}</span>
+                            </div>
+                            <div class="cost-item">
+                                <span class="cost-label">Total Spend</span>
+                                <span class="cost-value total">$${(combo.total_cost || 0).toFixed(2)}</span>
+                            </div>
+                        </div>
+                        ${combo.cost_breakdown ? renderCostBreakdown(combo.cost_breakdown, combo.total_units) : ''}
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            document.getElementById('resultsContainer').innerHTML = html;
+        }
+        
+        function applySuggestion(qty) {
+            document.getElementById('productQuantity').value = qty;
+            optimize();
+        }
+        
+        function renderBoxItem(box, type) {
+            const labelClass = type === 'primary' ? 'primary' : 'secondary';
+            const labelText = type === 'primary' ? 'Main' : (type === 'secondary' ? '2nd' : '3rd');
+            const rotationBadge = box.orientation && box.orientation !== 'Original' 
+                ? `<span style="background: rgba(255,150,0,0.2); color: #ffaa00; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; margin-left: 5px;">🔄 ${box.orientation}</span>` 
+                : '';
+            
+            return `
+                <div class="box-item ${labelClass}">
+                    <div class="box-label ${labelClass}">${labelText}</div>
+                    <div class="box-details">
+                        <div class="box-sku">${box.sku} ${rotationBadge}</div>
+                        <div class="box-dims">${box.dimensions}</div>
+                        <div style="font-size: 0.75rem; color: #888;">${box.units_per_box} units/box · ${box.arrangement}</div>
+                    </div>
+                    <div class="box-counts">
+                        <div class="box-count">${box.count}×</div>
+                        <div class="box-units">${box.units_packed} units</div>
+                        <div class="box-subtotal">$${box.subtotal.toFixed(2)}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function selectCombo(idx) {
+            selectedCombo = currentCombinations[idx];
+            selectedBox = null;
+            
+            document.querySelectorAll('.combo-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === idx);
+            });
+            
+            renderCombination(selectedCombo);
+        }
+        
+        // =====================================================================
+        // INIT
+        // =====================================================================
+        document.addEventListener('DOMContentLoaded', initThreeJS);
+        document.addEventListener('keypress', e => { if (e.key === 'Enter') optimize(); });
+    </script>
+</body>
+</html>

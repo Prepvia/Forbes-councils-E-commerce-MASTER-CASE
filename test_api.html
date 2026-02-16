@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a2e; color: #fff; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #000; padding: 15px; overflow: auto; max-height: 400px; }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+    </style>
+</head>
+<body>
+    <h1>Master Case Optimizer - API Test</h1>
+    
+    <button onclick="testUnlimited()">Test Unlimited Mode</button>
+    <button onclick="testCasePacked()">Test Case Packed Mode</button>
+    <button onclick="testSingleUnits()">Test Single Units Mode</button>
+    
+    <h3>Result:</h3>
+    <pre id="result">Click a button to test...</pre>
+    
+    <script>
+        const API = 'http://localhost:8002/api';
+        
+        async function testUnlimited() {
+            await testAPI({
+                name: 'Test',
+                length: 4,
+                width: 3,
+                height: 2,
+                weight: 0.5,
+                quantity: -1
+            }, 'Unlimited');
+        }
+        
+        async function testCasePacked() {
+            await testAPI({
+                name: 'Test',
+                length: 4,
+                width: 3,
+                height: 2,
+                weight: 0.5,
+                quantity: 100,
+                limited_mode: 'case_packed'
+            }, 'Case Packed');
+        }
+        
+        async function testSingleUnits() {
+            await testAPI({
+                name: 'Test',
+                length: 4,
+                width: 3,
+                height: 2,
+                weight: 0.5,
+                quantity: 100,
+                limited_mode: 'single_units'
+            }, 'Single Units');
+        }
+        
+        async function testAPI(payload, modeName) {
+            const pre = document.getElementById('result');
+            pre.textContent = `Testing ${modeName}...\n\nPayload:\n${JSON.stringify(payload, null, 2)}\n\n`;
+            
+            try {
+                const response = await fetch(`${API}/optimize`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                
+                pre.innerHTML = `<span class="success">SUCCESS - ${modeName}</span>\n\n`;
+                pre.innerHTML += `Response:\n${JSON.stringify(data, null, 2)}`;
+                
+            } catch (err) {
+                pre.innerHTML = `<span class="error">ERROR - ${modeName}</span>\n\n${err.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
