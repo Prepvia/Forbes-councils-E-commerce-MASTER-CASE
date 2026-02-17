@@ -105,3 +105,4 @@ When you click a recommended box, the bottom detail panel shows:
 `https://github.com/Prepvia/Forbes-councils-E-commerce-MASTER-CASE`
 
 For a personal narrative and business pitch context, see `FORBES_PITCH.md`.
+For vulnerability reporting and security process, see `SECURITY.md`.
