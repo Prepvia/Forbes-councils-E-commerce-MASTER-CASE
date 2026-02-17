@@ -6,6 +6,20 @@ Built for the Forbes Council E-Commerce community. Free, local-first, no account
 
 ---
 
+## Download & Run in 60 Seconds
+
+1. Open the public repository:  
+   `https://github.com/Prepvia/Forbes-councils-E-commerce-MASTER-CASE`
+2. Click **Code** > **Download ZIP**
+3. Extract the ZIP file
+4. Open the `Master Case Optimizer` folder
+5. Double-click `START_OPTIMIZER.bat`
+6. In your browser, go to `http://localhost:8002`
+
+That is it. No account, no cloud setup, no paid service required.
+
+---
+
 ## Current Features
 
 ### Optimization modes
