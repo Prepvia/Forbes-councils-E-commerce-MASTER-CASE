@@ -1,57 +1,108 @@
-# Forbes Council E-Commerce — Master Case Optimizer
+# Master Case Optimizer
 
-Hey everyone,
-
-I wanted to share something I built for us — something I wish I’d had years ago when I was guessing which box to use and losing money on every shipment.
+A practical tool to remove guesswork from master case selection and reduce hidden logistics costs.
 
 ---
 
-## Why this actually matters
+## Why This Exists
 
-Most of us just pick a master case that “looks right” or stick with whatever we’ve always used. But the wrong box is expensive. Too big and you’re paying for air, worse pallet fit, and higher freight. Too small and you’re drowning in boxes, labels, and labor. And when your quantity doesn’t fit neatly? You’re either short or stuck with leftover units you didn’t plan for.
+In many operations, carton selection is based on habit, supplier defaults, or what “looks right.”
 
-Nobody sits down with a ruler and the whole ULINE catalog. So we guess. And that guess costs us real money — every single shipment.
+The wrong box quietly compounds cost:
 
-That’s why I built this. So we can stop guessing and see, in seconds, which box actually makes sense for our product and our volume.
+- Too large → You pay to ship air, reduce pallet density, and increase freight cost.
+- Too small → More cartons, more labels, more labor, more touches.
+- Quantities don’t divide cleanly → Leftovers, short shipments, or unplanned waste.
 
----
+Those small inefficiencies repeat across every shipment.
 
-## What it does (in plain English)
-
-You enter your product: dimensions and weight. The tool looks at **every** standard ULINE box and scores them on what really matters: pallet fit, how full the box actually is, cost per unit, and how manageable it is to handle. You get a clear ranking and a 3D view of how your product packs inside.
-
-Two ways to use it:
-
-- **“I sell this all the time — what’s the best box?”**  
-  That’s Unlimited mode. You get the top options, scores, and you can compare box price, cost per unit, and total estimated cost (including labels, handling, labor, and FBA inbound if you turn on the advanced options).
-
-- **“I need to ship exactly X units.”**  
-  That’s Limited mode. You can go Case Packed (one box type, zero waste — every unit fits) or Single Units (mix up to 3 box types so you hit your number exactly with no leftovers). Either way, you see total spend and per-unit cost so you know what you’re really paying.
-
-So instead of “which box do we use?” you get “here are the best options, and here’s what each one costs us.”
+This tool replaces intuition with measurable tradeoffs.
 
 ---
 
-## Why you should use it
+## What It Does
 
-Because your time is worth more than flipping through a catalog. Because a few cents per unit adds up fast when you’re moving volume. And because the right box means better pallet utilization, fewer touches, and less waste — which matters whether you’re sending to FBA, a 3PL, or retail.
+You enter:
 
-I built it for the Forbes Council e-commerce community. It’s free, it runs on your machine (no data sent anywhere), and it uses the same ULINE boxes you can actually order. The costs in the tool are based on ULINE list pricing — we all know that can be negotiated with volume, but it’s a solid starting point.
+- Product dimensions
+- Product weight
+
+The optimizer evaluates standard ULINE cartons and scores them based on:
+
+- Pallet utilization
+- Box fill rate
+- Cost per unit
+- Handling efficiency
+
+You receive:
+
+- Ranked carton options
+- Cost comparisons
+- A 3D packing visualization of how the product fits inside each box
 
 ---
 
-## How to run it
+## Two Primary Use Cases
 
-1. Download the project folder (Master Case Optimizer).
-2. Run `START_OPTIMIZER.bat` (or `python optimizer_engine.py`).
-3. Open `http://localhost:8002` in your browser.
-4. Enter your product, hit optimize, and you’re done.
+### 1️⃣ Ongoing SKU Optimization
 
-If you use the advanced options, you can add label cost, handling per box (e.g. 25¢), labor (hourly rate and boxes per hour), and FBA inbound placement — so the total you see is much closer to what you’ll really spend.
+If you ship a product regularly, the optimizer:
+
+- Surfaces top-performing carton options
+- Compares box price and cost per unit
+- Estimates total cost impact
+
+Advanced inputs allow you to include:
+
+- Label cost
+- Handling cost per box (e.g. $0.25)
+- Labor (hourly rate + boxes per hour)
+- FBA inbound placement assumptions
+
+This gives you a closer approximation of true landed operational cost.
 
 ---
 
-Hope this helps. If you try it and have ideas to make it better, I’m all ears.
+### 2️⃣ Exact Quantity Planning
 
-— Bernard  
-(WAZIN · Forbes Council E-Commerce)
+If you need to ship a fixed number of units:
+
+- **Case Packed Mode** → One carton type, zero waste, clean division.
+- **Mixed Mode** → Combine up to 3 carton sizes to hit your exact unit target with no leftovers.
+
+You see:
+
+- Total spend
+- Effective per-unit cost
+- Operational tradeoffs before committing
+
+---
+
+## Pricing Assumptions
+
+- Uses ULINE list pricing as a standardized baseline.
+- Negotiated rates may vary.
+- The goal is consistent comparison logic, not supplier-specific quoting.
+
+---
+
+## Key Principle
+
+The objective is not just cheaper cartons.
+
+The objective is reducing variability and eliminating invisible cost layers in:
+
+- Freight
+- Labor
+- Pallet density
+- Handling complexity
+
+---
+
+## How to Run
+
+1. Download the project folder (`Master Case Optimizer`)
+2. Run:
+
+```bash
+START_OPTIMIZER.bat
