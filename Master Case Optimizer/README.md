@@ -1,78 +1,107 @@
 # Master Case Optimizer v2.0
 
-Find the optimal ULINE Master Case for your product with multi-factor scoring and full cost estimates.
+Find the best ULINE master case for your product using score-based optimization, pallet utilization, and full cost visibility.
 
-**Built for the Forbes Council E-Commerce community.** Free, runs locally, no account required.
+Built for the Forbes Council E-Commerce community. Free, local-first, no account required.
 
 ---
 
-## Features
+## Current Features
 
-### Two modes
-- **Unlimited mode** — Find the best box regardless of quantity. Get top recommendations with scores, cost per unit, and optional full cost breakdown (labels, handling, labor, FBA inbound).
-- **Limited mode** — Optimize for a specific quantity:
-  - **Case packed** — One box type only, zero empty slots (perfect for FBA case-packed).
-  - **Single units** — Mix up to 3 box types to hit your exact quantity with no leftover.
+### Optimization modes
+- **Unlimited mode**: ranks the best box options regardless of quantity.
+- **Limited mode**:
+  - **Case Packed**: enforces exact case-packed logic (no empty slots for selected quantity workflows).
+  - **Single Units**: supports mixed-box combinations (up to 3 box types) to hit target quantity with better fit/cost.
 
-### Four optimization factors (1–100 score)
-| Factor | Description |
-|--------|-------------|
-| Pallet efficiency | How many boxes fit on a standard 48"×40"×65" pallet |
-| Volume efficiency | Product volume vs box volume (less wasted space) |
-| Price per unit | Cost efficiency per unit packed |
-| Ergonomics | Ease of handling (size, weight, shape) |
+### 1-100 scoring model
+Each recommendation includes normalized scores (1-100):
+- **Overall**
+- **Pallet efficiency**
+- **Volume efficiency**
+- **Price efficiency**
+- **Ergonomics**
+
+### ULINE catalog (expanded)
+- **432 ULINE box configurations total**
+  - **224 x 32 ECT lightweight**
+  - **208 x 200 lb. test**
+- Full pricing tiers per SKU:
+  - Qty 25
+  - Qty 100
+  - Qty 250
+  - Qty 500
+  - Qty 1,000+
+- Direct **ULINE link button** for each recommended SKU.
+
+### Detail panel per selected box
+When you click a recommended box, the bottom detail panel shows:
+- **Price Tiers** table with savings by quantity
+- **Pallet Load visual** (front + top SVG simulation)
+- **Pallet Stats**:
+  - boxes per layer
+  - total layers
+  - total boxes
+  - stack height on **48 x 40 x 69 in** pallet
+  - empty pallet-box weight
+  - loaded weight (based on actual product weight input)
+- **Ergonomics** view (person-holding-box visual + label)
 
 ### Advanced cost options (optional)
-- Label cost per box  
-- Handling cost per box (default $0.25)  
-- Labor: hourly rate and boxes per hour → cost per box  
-- FBA inbound placement: single location / 2–3 locations / 5+ locations  
-- FBA fee schedule: until Jan 15, 2026 or from Jan 15, 2026  
+- Label cost per box
+- Handling cost per box (default $0.25)
+- Labor cost (hourly rate + boxes/hour)
+- FBA inbound placement strategy:
+  - single location
+  - 2-3 locations
+  - 5+ locations
+- FBA fee schedule options (2025 / 2026)
 
-Results show a full cost breakdown (boxes, labels, handling, labor, FBA inbound) and total per unit when these options are used.
-
-### Other features
-- **38 ULINE standard box SKUs** (6" to 36" range)  
-- **3D packing visualization** (Three.js)  
-- **Amazon FBA compliant** (36"/25"/25" limits, 50 lbs max)  
-- **Weight** used for FBA inbound fee lookup and box weight limits  
-
----
-
-## Constraints
-- Max box weight: 50 lbs (warning at 45 lbs)  
-- Max dimensions: 36" × 25" × 25" (FBA)  
-- Box prices based on ULINE list pricing (can be negotiated with volume)  
+### Compliance and safeguards
+- FBA dimensional constraints considered: **36 x 25 x 25 in**
+- Pallet height model updated to **69 in**
+- Weight input used in optimization and cost logic
+- ULINE list pricing disclaimer included (prices are negotiable in real purchasing)
 
 ---
 
-## Quick start
-
-1. **Run the app**  
-   - Windows: double-click `START_OPTIMIZER.bat`  
-   - Or: `python optimizer_engine.py`  
-
-2. **Open in browser**  
-   - Go to [http://localhost:8002](http://localhost:8002)  
-
-3. **Enter your product**  
-   - Dimensions (L × W × H in inches) and weight (lbs)  
-   - For Limited mode, enter total quantity and choose Case Packed or Single Units  
-
-4. **Click “Find Optimal Box”**  
-   - Review scores, costs, and 3D view  
-   - Use “Advanced cost options” to add labels, handling, labor, and FBA placement for a full cost estimate  
+## Important Notes
+- Loaded pallet weight in the detail panel uses **actual product weight** from user input (not the box's max rating).
+- Box shell weight is estimated from surface area and calibrated to realistic corrugated behavior (for example, ~0.80 lb for a 12 x 12 x 12 in 32 ECT box).
+- All calculations run locally in your environment.
 
 ---
 
-## Technical
-- **Backend:** Python 3.x (HTTP server on port 8002)  
-- **Frontend:** HTML5, CSS3, JavaScript, Three.js  
-- **Data:** All processing is local; no data is sent to any server  
+## Quick Start
+
+1. Run the app
+   - Windows: `START_OPTIMIZER.bat`
+   - Or terminal: `python optimizer_engine.py`
+
+2. Open browser
+   - `http://localhost:8002`
+
+3. Enter product data
+   - Dimensions (L x W x H in)
+   - Weight (lb)
+   - Optional units per pack
+   - Optional advanced cost settings
+
+4. Click **Find Optimal Box**
+   - Review ranked results, score breakdown, and 3D visual
+   - Click a SKU to open full bottom detail panel
+
+---
+
+## Tech Stack
+- Backend: Python 3.x HTTP server
+- Frontend: HTML, CSS, JavaScript
+- Visualization: Three.js + custom SVG detail visuals
+- Data processing: local only (no external data transmission required for calculations)
 
 ---
 
 ## Repository
-[Forbes-councils-E-commerce-MASTER-CASE](https://github.com/Prepvia/Forbes-councils-E-commerce-MASTER-CASE) — WAZIN / Forbes Council E-Commerce
+`https://github.com/Prepvia/Forbes-councils-E-commerce-MASTER-CASE`
 
-For a more personal intro and why this tool matters, see [FORBES_PITCH.md](FORBES_PITCH.md).
+For a personal narrative and business pitch context, see `FORBES_PITCH.md`.
