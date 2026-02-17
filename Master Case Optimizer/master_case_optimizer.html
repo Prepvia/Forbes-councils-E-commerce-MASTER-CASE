@@ -424,6 +424,23 @@
             color: #00d4ff;
             font-size: 0.85rem;
         }
+        .uline-btn {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            color: #00d4ff;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            border-radius: 6px;
+            text-decoration: none;
+            background: rgba(0, 212, 255, 0.08);
+            transition: all 0.2s;
+        }
+        .uline-btn:hover {
+            background: rgba(0, 212, 255, 0.18);
+            border-color: #00d4ff;
+        }
+        .uline-btn:active { outline: none; }
         
         .box-dims {
             font-size: 0.8rem;
@@ -813,6 +830,143 @@
         .cost-breakdown-block .cost-row .label { color: #888; }
         .cost-breakdown-block .cost-row .value { color: #ffcc00; }
         .cost-breakdown-block .cost-row.total-row .value { color: #00ff88; }
+
+        /* Detail Panel (below main layout) */
+        .detail-panel {
+            display: none;
+            margin-top: 20px;
+            background: rgba(30, 30, 50, 0.95);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            padding: 25px;
+        }
+        .detail-panel.show { display: block; }
+        .detail-panel .section-title { margin-bottom: 20px; }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .detail-grid .detail-card.full-width {
+            grid-column: 1 / -1;
+        }
+        @media (max-width: 900px) { .detail-grid { grid-template-columns: 1fr; } }
+        .detail-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .detail-card h3 {
+            color: #00d4ff;
+            font-size: 1rem;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .price-tier-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .price-tier-table th {
+            text-align: left;
+            padding: 6px 8px;
+            color: #888;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .price-tier-table td {
+            padding: 6px 8px;
+            color: #ccc;
+        }
+        .price-tier-table tr.best td { color: #00ff88; font-weight: 700; }
+        .price-tier-table .price-val { color: #ffcc00; font-weight: 600; }
+        .pallet-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.85rem;
+        }
+        .pallet-stat .ps-label { color: #888; }
+        .pallet-stat .ps-value { color: #ccc; font-weight: 600; }
+        .pallet-stat .ps-value.highlight { color: #00d4ff; }
+        .ergo-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .ergo-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .ergo-badge.easy { background: rgba(0,255,136,0.15); color: #00ff88; border: 1px solid rgba(0,255,136,0.3); }
+        .ergo-badge.moderate { background: rgba(255,204,0,0.15); color: #ffcc00; border: 1px solid rgba(255,204,0,0.3); }
+        .ergo-badge.heavy { background: rgba(255,150,0,0.15); color: #ff9900; border: 1px solid rgba(255,150,0,0.3); }
+        .ergo-badge.very-heavy { background: rgba(255,80,80,0.15); color: #ff5555; border: 1px solid rgba(255,80,80,0.3); }
+        .ergo-person-svg { max-width: 120px; }
+        .box-type-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .box-type-badge.ect32 { background: rgba(0,212,255,0.15); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
+        .box-type-badge.lb200 { background: rgba(255,150,0,0.15); color: #ffaa00; border: 1px solid rgba(255,150,0,0.3); }
+
+        /* Pallet visual */
+        .pallet-visual-wrap {
+            display: flex;
+            gap: 24px;
+            align-items: flex-end;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .pallet-view {
+            text-align: center;
+        }
+        .pallet-view-label {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .pallet-svg {
+            background: rgba(0,0,0,0.25);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .pallet-summary-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .pallet-summary-item {
+            text-align: center;
+        }
+        .pallet-summary-item .ps-num {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #00d4ff;
+            display: block;
+        }
+        .pallet-summary-item .ps-lbl {
+            font-size: 0.7rem;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
     </style>
 </head>
 <body>
@@ -940,9 +1094,10 @@
                         <div class="section-title">Recommendations</div>
                         
                         <div class="info-banner">
-                            📦 Pallet: <strong>48"×40"×65"</strong> |
+                            📦 Pallet: <strong>48"×40"×69"</strong> |
                             ⚖️ Max: <strong>50 lbs</strong> |
-                            📏 FBA: <strong>36"/25"/25"</strong>
+                            📏 FBA: <strong>36"/25"/25"</strong> |
+                            📊 <strong>432 ULINE boxes</strong> (32 ECT + 200 lb)
                         </div>
                         
                         <!-- Sort Buttons -->
@@ -980,8 +1135,16 @@
             </div>
         </div>
         
+        <!-- Detail Panel: appears when user clicks a box -->
+        <div class="detail-panel" id="detailPanel">
+            <div class="section-title" id="detailTitle">Box Details</div>
+            <div class="detail-grid" id="detailGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
         <footer class="app-footer">
-            Master Case Optimizer v2.0 &mdash; Built by WAZIN &mdash; Pallet: 48"&times;40"&times;65" | Max weight: 50 lbs | FBA limits: 36"/25"/25"
+            Master Case Optimizer v2.0 &mdash; Built by WAZIN &mdash; Pallet: 48"&times;40"&times;69" | Max weight: 50 lbs | FBA limits: 36"/25"/25"
             <br><strong>Costs are based on ULINE list pricing;</strong> prices can often be negotiated and reduced with volume. Verify at <a href="https://www.uline.com" target="_blank">uline.com</a> before placing orders.
         </footer>
     </div>
@@ -1315,6 +1478,7 @@
             }
             
             document.getElementById('resultsPanel').classList.remove('hidden');
+            document.getElementById('detailPanel').classList.remove('show');
             document.getElementById('resultsContainer').innerHTML = `<div class="loading">Mode: ${currentMode} | Submode: ${currentSubmode}</div>`;
             
             const payload = { 
@@ -1414,22 +1578,27 @@
                     : '';
                 const overall = r.scores.overall;
                 
+                const boxTypeBadge = r.box_type === '32ECT'
+                    ? '<span class="box-type-badge ect32">32 ECT</span>'
+                    : '<span class="box-type-badge lb200">200 lb</span>';
+                
                 html += `
                     <div class="box-card ${selectedClass}" onclick="selectUnlimitedBox(${idx})">
                         <div class="box-card-header">
                             <div class="box-rank ${rankClass}">${r.rank || idx + 1}</div>
-                            <span class="box-sku">${r.sku}</span>
+                            <span class="box-sku">${r.sku} ${boxTypeBadge}</span>
                             <div class="overall-score-badge ${scoreClass(overall)}">${overall.toFixed(0)}</div>
                         </div>
                         ${rotationBadge ? `<div style="margin-bottom: 5px;">${rotationBadge}</div>` : ''}
                         <div class="box-card-body">
                             <div class="box-stat">📏 <strong>${r.dimensions}</strong></div>
                             <div class="box-stat">📦 <strong>${r.units_per_box}</strong> units/box</div>
-                            <div class="box-stat">💲 <strong>$${r.price.toFixed(2)}</strong> per box</div>
+                            <div class="box-stat">💲 <strong>$${r.price.toFixed(2)}</strong> (1000+)</div>
                             <div class="box-stat">💰 <strong>$${r.metrics.price_per_unit.toFixed(3)}</strong>/unit</div>
                             <div class="box-stat">📐 <strong>${r.metrics.volume_utilization}%</strong> vol. used</div>
-                            <div class="box-stat">⚖️ <strong>${r.metrics.total_weight} lbs</strong></div>
+                            <div class="box-stat">⚖️ <strong>${r.metrics.total_weight} lbs</strong> (max ${r.weight_limit || 40})</div>
                         </div>
+                        <a href="https://www.uline.com/Product/Detail/${r.sku}" target="_blank" rel="noopener" class="uline-btn" onclick="event.stopPropagation()">View on ULINE →</a>
                         <div class="score-bars">
                             <div class="score-item score-pallet">
                                 <div class="score-label">Pallet</div>
@@ -1487,6 +1656,7 @@
             });
             
             renderUnlimitedBox(selectedBox);
+            loadBoxDetail(selectedBox.sku);
         }
         
         // =====================================================================
@@ -1601,13 +1771,17 @@
             const rotationBadge = box.orientation && box.orientation !== 'Original' 
                 ? `<span style="background: rgba(255,150,0,0.2); color: #ffaa00; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; margin-left: 5px;">🔄 ${box.orientation}</span>` 
                 : '';
+            const btBadge = box.box_type === '32ECT'
+                ? '<span class="box-type-badge ect32">32 ECT</span>'
+                : (box.box_type ? '<span class="box-type-badge lb200">200 lb</span>' : '');
             
             return `
                 <div class="box-item ${labelClass}">
                     <div class="box-label ${labelClass}">${labelText}</div>
                     <div class="box-details">
-                        <div class="box-sku">${box.sku} ${rotationBadge}</div>
+                        <div class="box-sku">${box.sku} ${btBadge} ${rotationBadge}</div>
                         <div class="box-dims">${box.dimensions}</div>
+                        <a href="https://www.uline.com/Product/Detail/${box.sku}" target="_blank" rel="noopener" class="uline-btn" onclick="event.stopPropagation()">View on ULINE →</a>
                         <div style="font-size: 0.75rem; color: #888;">${box.units_per_box} units/box · ${box.arrangement}</div>
                     </div>
                     <div class="box-counts">
@@ -1628,8 +1802,323 @@
             });
             
             renderCombination(selectedCombo);
+            const primarySku = selectedCombo.primary ? selectedCombo.primary.sku : (selectedCombo.boxes && selectedCombo.boxes[0] ? selectedCombo.boxes[0].sku : null);
+            if (primarySku) loadBoxDetail(primarySku);
         }
         
+        // =====================================================================
+        // PALLET SVG BUILDER
+        // =====================================================================
+        function buildPalletSVG(boxData, palletData) {
+            const p = palletData;
+            const bl = boxData.l, bw = boxData.w, bh = boxData.h;
+            const aL = p.along_length;   // boxes along 48" side
+            const aW = p.along_width;    // boxes along 40" side
+            const layers = p.layers;
+            const stackH = p.stack_height;
+
+            if (p.total_boxes === 0) {
+                return '<div style="color:#ff5555; text-align:center; padding:30px;">Box does not fit on pallet.</div>';
+            }
+
+            // Use the actual oriented dimensions returned by the backend
+            const boxDimL = p.box_orient_l || bl;
+            const boxDimW = p.box_orient_w || bw;
+            const boxDimH = p.box_orient_h || bh;
+
+            // ---- FRONT VIEW (looking at the 48" side) ----
+            const fvW = 300, fvH = 240;
+            const palletDrawH = 12;
+            const margin = 20;
+            const drawW = fvW - margin * 2;
+            const drawH = fvH - margin * 2 - palletDrawH - 20;
+
+            const scaleX_f = drawW / 48;
+            const scaleY_f = drawH / 69;
+            const scale_f = Math.min(scaleX_f, scaleY_f);
+
+            const palletPxW = 48 * scale_f;
+            const stackPxH = stackH * scale_f;
+            const maxPxH = 69 * scale_f;
+            const boxPxW_f = boxDimL * scale_f;
+            const boxPxH_f = boxDimH * scale_f;
+
+            const baseY = fvH - margin - palletDrawH;
+            const startX = (fvW - palletPxW) / 2;
+
+            let frontSvg = `<svg viewBox="0 0 ${fvW} ${fvH}" class="pallet-svg" width="${fvW}" height="${fvH}" xmlns="http://www.w3.org/2000/svg">`;
+
+            // Max height guide line at 69"
+            const guideY = baseY - maxPxH;
+            frontSvg += `<line x1="${startX}" y1="${guideY}" x2="${startX + palletPxW}" y2="${guideY}" stroke="#ff5555" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>`;
+            frontSvg += `<text x="${startX + palletPxW + 4}" y="${guideY + 4}" fill="#ff5555" font-size="9" opacity="0.7">69"</text>`;
+
+            // Draw pallet base
+            frontSvg += `<rect x="${startX - 4}" y="${baseY}" width="${palletPxW + 8}" height="${palletDrawH}" rx="2" fill="#8B6914" stroke="#A07818" stroke-width="1"/>`;
+            frontSvg += `<text x="${fvW/2}" y="${baseY + palletDrawH + 12}" text-anchor="middle" fill="#666" font-size="9">48"</text>`;
+
+            // Draw boxes - front view (show aL columns x layers rows)
+            const colors = ['rgba(0,180,255,0.35)', 'rgba(0,220,180,0.3)', 'rgba(0,180,255,0.25)'];
+            for (let layer = 0; layer < layers; layer++) {
+                for (let col = 0; col < aL; col++) {
+                    const x = startX + col * boxPxW_f;
+                    const y = baseY - (layer + 1) * boxPxH_f;
+                    const fill = colors[layer % colors.length];
+                    frontSvg += `<rect x="${x}" y="${y}" width="${boxPxW_f}" height="${boxPxH_f}" fill="${fill}" stroke="rgba(0,212,255,0.6)" stroke-width="0.7" rx="1"/>`;
+                }
+            }
+
+            // Height dimension arrow on the right
+            const stackTopY = baseY - stackPxH;
+            frontSvg += `<line x1="${startX - 10}" y1="${baseY}" x2="${startX - 10}" y2="${stackTopY}" stroke="#00d4ff" stroke-width="1"/>`;
+            frontSvg += `<line x1="${startX - 14}" y1="${baseY}" x2="${startX - 6}" y2="${baseY}" stroke="#00d4ff" stroke-width="1"/>`;
+            frontSvg += `<line x1="${startX - 14}" y1="${stackTopY}" x2="${startX - 6}" y2="${stackTopY}" stroke="#00d4ff" stroke-width="1"/>`;
+            frontSvg += `<text x="${startX - 12}" y="${(baseY + stackTopY) / 2 + 3}" text-anchor="end" fill="#00d4ff" font-size="9">${stackH}"</text>`;
+
+            frontSvg += '</svg>';
+
+            // ---- TOP VIEW (looking down at one layer) ----
+            const tvW = 240, tvH = 210;
+            const scaleX_t = (tvW - margin * 2) / 48;
+            const scaleY_t = (tvH - margin * 2 - 20) / 40;
+            const scale_t = Math.min(scaleX_t, scaleY_t);
+
+            const palletPxL_t = 48 * scale_t;
+            const palletPxW_t = 40 * scale_t;
+            const boxPxL_t = boxDimL * scale_t;
+            const boxPxW_t = boxDimW * scale_t;
+
+            const startX_t = (tvW - palletPxL_t) / 2;
+            const startY_t = (tvH - palletPxW_t - 20) / 2;
+
+            let topSvg = `<svg viewBox="0 0 ${tvW} ${tvH}" class="pallet-svg" width="${tvW}" height="${tvH}" xmlns="http://www.w3.org/2000/svg">`;
+
+            // Pallet outline
+            topSvg += `<rect x="${startX_t}" y="${startY_t}" width="${palletPxL_t}" height="${palletPxW_t}" fill="rgba(139,105,20,0.15)" stroke="#8B6914" stroke-width="1.5" rx="2"/>`;
+
+            // Draw boxes in grid
+            for (let row = 0; row < aW; row++) {
+                for (let col = 0; col < aL; col++) {
+                    const x = startX_t + col * boxPxL_t;
+                    const y = startY_t + row * boxPxW_t;
+                    topSvg += `<rect x="${x}" y="${y}" width="${boxPxL_t}" height="${boxPxW_t}" fill="rgba(0,180,255,0.3)" stroke="rgba(0,212,255,0.6)" stroke-width="0.7" rx="1"/>`;
+                }
+            }
+
+            // Wasted space shading (right gap)
+            const usedL = aL * boxPxL_t;
+            const usedW = aW * boxPxW_t;
+            if (usedL < palletPxL_t) {
+                topSvg += `<rect x="${startX_t + usedL}" y="${startY_t}" width="${palletPxL_t - usedL}" height="${palletPxW_t}" fill="rgba(255,80,80,0.08)" stroke="none"/>`;
+            }
+            if (usedW < palletPxW_t) {
+                topSvg += `<rect x="${startX_t}" y="${startY_t + usedW}" width="${palletPxL_t}" height="${palletPxW_t - usedW}" fill="rgba(255,80,80,0.08)" stroke="none"/>`;
+            }
+
+            // Dimension labels
+            topSvg += `<text x="${startX_t + palletPxL_t / 2}" y="${startY_t + palletPxW_t + 16}" text-anchor="middle" fill="#666" font-size="9">48"</text>`;
+            topSvg += `<text x="${startX_t - 8}" y="${startY_t + palletPxW_t / 2 + 3}" text-anchor="end" fill="#666" font-size="9">40"</text>`;
+
+            // Box count label in center
+            topSvg += `<text x="${startX_t + usedL / 2}" y="${startY_t + usedW / 2 + 4}" text-anchor="middle" fill="rgba(0,212,255,0.8)" font-size="11" font-weight="700">${aL}×${aW} = ${p.boxes_per_layer}/layer</text>`;
+
+            topSvg += '</svg>';
+
+            // Combine into layout
+            return `
+                <div class="pallet-visual-wrap">
+                    <div class="pallet-view">
+                        <div class="pallet-view-label">Front View</div>
+                        ${frontSvg}
+                    </div>
+                    <div class="pallet-view">
+                        <div class="pallet-view-label">Top View (1 layer)</div>
+                        ${topSvg}
+                    </div>
+                </div>
+                <div class="pallet-summary-row">
+                    <div class="pallet-summary-item">
+                        <span class="ps-num">${p.total_boxes}</span>
+                        <span class="ps-lbl">Total Boxes</span>
+                    </div>
+                    <div class="pallet-summary-item">
+                        <span class="ps-num">${p.layers}</span>
+                        <span class="ps-lbl">Layers</span>
+                    </div>
+                    <div class="pallet-summary-item">
+                        <span class="ps-num">${p.boxes_per_layer}</span>
+                        <span class="ps-lbl">Per Layer</span>
+                    </div>
+                    <div class="pallet-summary-item">
+                        <span class="ps-num">${stackH}"</span>
+                        <span class="ps-lbl">Stack Height</span>
+                    </div>
+                    <div class="pallet-summary-item">
+                        <span class="ps-num">${p.pallet_weight_loaded}</span>
+                        <span class="ps-lbl">Lbs (loaded)</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // =====================================================================
+        // BOX DETAIL PANEL
+        // =====================================================================
+        async function loadBoxDetail(sku) {
+            const panel = document.getElementById('detailPanel');
+            const grid = document.getElementById('detailGrid');
+            const title = document.getElementById('detailTitle');
+            
+            const productWeight = parseFloat(document.getElementById('productWeight').value) || 0;
+            const unitsPerPack = parseInt(document.getElementById('unitsPerPack').value) || 1;
+            
+            try {
+                const resp = await fetch(`${API}/box_detail`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({sku, product_weight: productWeight, units_per_box: unitsPerPack})
+                });
+                if (!resp.ok) { panel.classList.remove('show'); return; }
+                const d = await resp.json();
+                
+                const typeBadge = d.type === '32ECT'
+                    ? '<span class="box-type-badge ect32">32 ECT Lightweight</span>'
+                    : '<span class="box-type-badge lb200">200 lb. Test</span>';
+                
+                title.innerHTML = `Box Details: ${d.sku} &mdash; ${d.dimensions} ${typeBadge}`;
+                
+                // Price tiers card
+                const tiers = d.price_tiers;
+                const tierRows = [
+                    {qty: '25', price: tiers.qty_25},
+                    {qty: '100', price: tiers.qty_100},
+                    {qty: '250', price: tiers.qty_250},
+                    {qty: '500', price: tiers.qty_500},
+                    {qty: '1,000+', price: tiers.qty_1000},
+                ];
+                const minPrice = Math.min(tiers.qty_25, tiers.qty_100, tiers.qty_250, tiers.qty_500, tiers.qty_1000);
+                let priceHtml = `<table class="price-tier-table">
+                    <tr><th>Qty</th><th>Price/Box</th><th>Savings</th></tr>`;
+                tierRows.forEach(t => {
+                    const isBest = t.price === minPrice;
+                    const savings = tiers.qty_25 > 0 ? Math.round((1 - t.price / tiers.qty_25) * 100) : 0;
+                    priceHtml += `<tr class="${isBest ? 'best' : ''}">
+                        <td>${t.qty}</td>
+                        <td class="price-val">$${t.price.toFixed(2)}</td>
+                        <td>${savings > 0 ? '-' + savings + '%' : '—'}</td>
+                    </tr>`;
+                });
+                priceHtml += `</table>
+                    <div style="margin-top:10px; font-size:0.75rem; color:#666;">
+                        Weight limit: <strong style="color:#ccc;">${d.weight_limit} lbs</strong> | 
+                        Box weight: <strong style="color:#ccc;">${d.box_weight_lb} lbs</strong>
+                    </div>
+                    <a href="https://www.uline.com/Product/Detail/${d.sku}" target="_blank" rel="noopener" class="uline-btn" style="margin-top:10px;">View on ULINE →</a>`;
+                
+                // Pallet simulation card - visual + stats
+                const p = d.pallet;
+                const utilPct = p.total_boxes > 0 ? Math.round((p.stack_height / 69) * 100) : 0;
+
+                // Build the loaded-pallet SVG (front view + top view)
+                const palletVisualHtml = buildPalletSVG(d, p);
+
+                // Stats rows
+                let palletStatsHtml = '';
+                const contentPerBox = p.content_per_box || 0;
+                const loadedLabel = contentPerBox > 0
+                    ? `Weight (loaded @ ${contentPerBox} lb/box)`
+                    : 'Weight (loaded)';
+                const stats = [
+                    ['Boxes / layer', p.boxes_per_layer],
+                    ['Layers', p.layers],
+                    ['Total on pallet', `<span style="color:#00d4ff;font-weight:800;">${p.total_boxes}</span>`],
+                    ['Along 48" side', `${p.along_length} boxes`],
+                    ['Along 40" side', `${p.along_width} boxes`],
+                    ['Stack height', `${p.stack_height}" / 69"`],
+                    ['Boxes only (empty)', `${p.pallet_weight_empty_boxes} lbs`],
+                    [loadedLabel, `${p.pallet_weight_loaded} lbs`],
+                ];
+                stats.forEach(([label, val]) => {
+                    palletStatsHtml += `<div class="pallet-stat">
+                        <span class="ps-label">${label}</span>
+                        <span class="ps-value">${val}</span>
+                    </div>`;
+                });
+                palletStatsHtml += `<div style="margin-top:10px; text-align:center;">
+                    <div style="background:rgba(255,255,255,0.05); border-radius:6px; height:12px; overflow:hidden;">
+                        <div style="height:100%; width:${utilPct}%; background: linear-gradient(90deg, #00d4ff, #00ff88); border-radius:6px;"></div>
+                    </div>
+                    <div style="font-size:0.75rem; color:#888; margin-top:4px;">${utilPct}% height utilization</div>
+                </div>`;
+                if (contentPerBox <= 0) {
+                    palletStatsHtml += `<div style="margin-top:8px; font-size:0.72rem; color:#ff9900; text-align:center;">
+                        ⚠️ Enter product weight above for accurate loaded weight.
+                    </div>`;
+                }
+                
+                // Ergonomics card
+                const e = d.ergonomics;
+                const ergoClass = e.label.toLowerCase().replace(' ', '-');
+                const boxW = d.w;
+                const boxH = d.h;
+                const boxScale = Math.min(1, 14 / Math.max(boxW, boxH));
+                const svgBoxW = boxW * boxScale * 3;
+                const svgBoxH = boxH * boxScale * 3;
+                
+                let ergoHtml = `
+                    <div class="ergo-visual">
+                        <div class="ergo-badge ${ergoClass}">${e.label}</div>
+                        <svg viewBox="0 0 100 150" class="ergo-person-svg" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Person silhouette -->
+                            <circle cx="50" cy="18" r="12" fill="#556" stroke="#889" stroke-width="1"/>
+                            <line x1="50" y1="30" x2="50" y2="85" stroke="#556" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="50" y1="85" x2="35" y2="130" stroke="#556" stroke-width="3.5" stroke-linecap="round"/>
+                            <line x1="50" y1="85" x2="65" y2="130" stroke="#556" stroke-width="3.5" stroke-linecap="round"/>
+                            <!-- Arms holding box -->
+                            <line x1="50" y1="45" x2="30" y2="60" stroke="#556" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="50" y1="45" x2="70" y2="60" stroke="#556" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="30" y1="60" x2="30" y2="75" stroke="#556" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="70" y1="60" x2="70" y2="75" stroke="#556" stroke-width="3" stroke-linecap="round"/>
+                            <!-- Box in front of belly -->
+                            <rect x="${50 - svgBoxW/2}" y="${60}" width="${svgBoxW}" height="${svgBoxH}" rx="2"
+                                  fill="rgba(0,212,255,0.2)" stroke="#00d4ff" stroke-width="1.5"/>
+                            <text x="50" y="${60 + svgBoxH/2 + 3}" text-anchor="middle" fill="#00d4ff" font-size="7" font-weight="600">
+                                ${d.w}×${d.h}"
+                            </text>
+                        </svg>
+                        <div style="font-size:0.8rem; color:#888; text-align:center;">
+                            Max dimension: <strong style="color:#ccc;">${e.max_dimension}"</strong><br>
+                            ${d.l}" × ${d.w}" × ${d.h}"
+                        </div>
+                    </div>`;
+                
+                grid.innerHTML = `
+                    <div class="detail-card full-width">
+                        <h3>📦 Pallet Load — ${p.total_boxes} boxes on 48"×40"×69"</h3>
+                        ${palletVisualHtml}
+                    </div>
+                    <div class="detail-card">
+                        <h3>💲 Price Tiers</h3>
+                        ${priceHtml}
+                    </div>
+                    <div class="detail-card">
+                        <h3>📊 Pallet Stats</h3>
+                        ${palletStatsHtml}
+                    </div>
+                    <div class="detail-card full-width" style="max-width:400px;">
+                        <h3>🏋️ Ergonomics</h3>
+                        ${ergoHtml}
+                    </div>
+                `;
+                
+                panel.classList.add('show');
+                panel.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+            } catch (err) {
+                console.error('Detail load error:', err);
+                panel.classList.remove('show');
+            }
+        }
+
         // =====================================================================
         // INIT
         // =====================================================================
